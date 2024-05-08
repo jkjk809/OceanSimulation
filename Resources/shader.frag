@@ -28,6 +28,10 @@ struct Light {
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
+
+    float constant;
+    float linear;
+    float quadratic;
 };
 
 uniform Light light;  
@@ -38,18 +42,26 @@ vec3 objColor = vec3(0.388, 0.831, 0.988);
 
 void main()
 {
-// vec2 correctedTexCoord = TexCoords + vec2(FragPos.x * Depth, FragPos.y * Depth);
    
+   float distance = length(lightPos - FragPos);
+   float attenuation = 1.0 / (light.constant + light.linear * distance + 
+    		    light.quadratic * (distance * distance));    
+
     vec3 norm = normalize(Normal);
     vec3 lightDir = normalize(lightPos - FragPos);  
     float diff = max(dot(norm, lightDir), 0.0);
     
     vec3 viewDir = normalize(viewPos - FragPos);
     vec3 reflectDir = reflect(-lightDir, norm);
-     vec3 ambient  = light.ambient * objectColor;
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+    
+    vec3 ambient  = light.ambient * objectColor;
     vec3 diffuse  = light.diffuse * diff * objectColor;
-
-    vec3 result = ambient + diffuse;
+    vec3 specular = light.specular * spec * vec3(1.0,1.0,1.0);
+    diffuse *= attenuation;
+    specular *= attenuation;
+    vec3 result = (ambient + diffuse + specular) * objectColor ;
+    
     FragColor = vec4(result, 1.0);
     
 };

@@ -30,8 +30,8 @@ Camera camera(glm::vec3(0.0f, 0.5f, 7.0f));
 Screen screen;
 Mouse mouse(&camera);
 bool wireframe = false;
-
-glm::vec3 lightPos(0.0f, 2.0f, -3.0f);
+bool pause = false;
+glm::vec3 lightPos(0.0f, 2.0f, 0.0f);
 
 
 int main()
@@ -77,12 +77,15 @@ int main()
 	
 	objectShader.use();
 	objectShader.setMat4("projection", projection);
-	objectShader.setVec3("light.ambient", 0.3f, 0.3f, 0.3f);
+	objectShader.setVec3("light.ambient", 0.7f, 0.7f, 0.7f);
 	objectShader.setVec3("light.diffuse", 0.75f, 0.75f, 0.75f); // darken diffuse light a bit
 	objectShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
 	objectShader.setVec3("lightPos", lightPos);
-	objectShader.setVec3("material.specular", 1.0f, 1.0f, 1.0f);
-	objectShader.setFloat("material.shininess", 512.0f);
+	objectShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+	objectShader.setFloat("material.shininess", 32.0f);
+	objectShader.setFloat("light.constant", 1.0f);
+	objectShader.setFloat("light.linear", 0.09f);
+	objectShader.setFloat("light.quadratic", 0.032f);
 
 	objectShader.setVec3("objectColor", 0.388, 0.831, 0.988);
 	objectShader.setVec3("lightColor", 0.4f, 0.4f, 0.4f);
@@ -110,12 +113,17 @@ int main()
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 		
+		
+
 		time = glfwGetTime();
 		glm::mat4 view = camera.GetViewMatrix();
 
 		objectShader.use();
 		objectShader.setMat4("view", view);
-		objectShader.setFloat("time", time);
+		if (!pause) {
+			objectShader.setFloat("time", time);
+		}
+		
 		objectShader.setVec3("viewPos", camera.Position);
 
 		water.render(objectShader);
@@ -142,6 +150,16 @@ void processInput()
 		if (elapsedTime > 200) // Cooldown period: 200 milliseconds
 		{
 			wireframe = !wireframe;
+			lastToggleTime = currentTime;
+		}
+	}
+	if (Keyboard::key(GLFW_KEY_P))
+	{
+		auto currentTime = std::chrono::steady_clock::now();
+		auto elapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - lastToggleTime).count();
+		if (elapsedTime > 200) // Cooldown period: 200 milliseconds
+		{
+			pause = !pause;
 			lastToggleTime = currentTime;
 		}
 	}
