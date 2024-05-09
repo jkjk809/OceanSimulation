@@ -40,6 +40,11 @@ uniform Material material;
 uniform bool lighting;
 vec3 objColor = vec3(0.388, 0.831, 0.988);
 
+float fresnel(vec3 viewDir, vec3 normal, float refIndex) {
+    float cosTheta = dot(-viewDir, normal);
+    return pow(1.0 - cosTheta, refIndex);
+}
+
 void main()
 {
    
@@ -48,20 +53,21 @@ void main()
     		    light.quadratic * (distance * distance));    
 
     vec3 norm = normalize(Normal);
-    vec3 lightDir = normalize(lightPos - FragPos);  
+    
+    vec3 lightDir = normalize(-light.direction);  
     float diff = max(dot(norm, lightDir), 0.0);
     
     vec3 viewDir = normalize(viewPos - FragPos);
+    float fresnelFactor = fresnel(viewDir, norm, 10.7f);
     vec3 reflectDir = reflect(-lightDir, norm);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
     
     vec3 ambient  = light.ambient * objectColor;
     vec3 diffuse  = light.diffuse * diff * objectColor;
-    vec3 specular = light.specular * spec * vec3(1.0,1.0,1.0);
-   ambient *= attenuation;
-   diffuse *= attenuation;
-   specular *= attenuation;
-    vec3 result = (ambient + diffuse + specular) * objectColor;
+    vec3 specular = light.specular * spec * fresnelFactor;
+    diffuse *= attenuation;
+    specular *= attenuation;
+    vec3 result = ambient + diffuse + specular;
     
     FragColor = vec4(result, 1.0);
     

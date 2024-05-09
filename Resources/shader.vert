@@ -8,7 +8,7 @@ uniform mat4 view;
 uniform mat4 projection;
 uniform float time;
 
-float directionSeed = 74.0f;
+float directionSeed = 32.235f;
 
 //f(x,t) = amp * sin(x * frequency + t * speed)
 
@@ -19,7 +19,7 @@ out vec2 TexCoords;
 
 	
 
-vec3 totalNormals = aNormal;
+vec3 totalNormals = vec3(0.0f,0.0f,0.0f);
 
 float random (vec2 seed) 
 {
@@ -34,9 +34,7 @@ vec2 getRandomDirection(int waveNum)
     return normalize(dir);
 }
 
-vec3 calcNormals(float expWave, float cosWave, float amplitude, float frequency, vec2 direction){
-	float dx = amplitude * frequency * expWave * direction.x * cosWave;
-    float dz = amplitude * frequency * expWave * direction.y * cosWave;
+vec3 calcNormals(float dx,float dz){
 
 	vec3 tangentVector = vec3(1.0, dx, 0.0);  
     vec3 binormalVector = vec3(0.0, dz, 1.0);
@@ -48,11 +46,13 @@ vec3 calcNormals(float expWave, float cosWave, float amplitude, float frequency,
 float displaceVertex(vec3 worldPos)
 {
 	float totalWave = 0.0f;
-	float amplitude = 0.43f;
-	float frequency = 0.8f;
-	float speed = 1.2;
+	float amplitude = 0.72f;
+	float frequency = 0.396f;
+	float speed = 1.34f;
+	float dx = 0.0f;
+    float dz = 0.0f;
 
-	for(int i = 0; i < 15; i++)
+	for(int i = 0; i < 200; i++)
 	{
 	vec2 direction = getRandomDirection(i);
 		
@@ -63,13 +63,15 @@ float displaceVertex(vec3 worldPos)
 		float expWave = exp(sinWave - 1.0f);
 
 		totalWave += amplitude * expWave;
-		totalNormals += calcNormals(expWave, cosWave, amplitude, frequency, direction);
 
-		amplitude *= 0.89;
-		frequency *= 1.16;
-		speed *= 1.07;
+		dx += amplitude * frequency * expWave * direction.x * cosWave;
+        dz += amplitude * frequency * expWave * direction.y * cosWave;
+		amplitude *= 0.70f;
+		frequency *= 1.22f;
+		speed *= 0.97f;
 		
 	}
+	totalNormals = calcNormals(dx, dz);
 	worldPos.y = totalWave;
 	return worldPos.y;
 }

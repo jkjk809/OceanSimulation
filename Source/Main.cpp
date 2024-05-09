@@ -65,7 +65,7 @@ int main()
 	Model water(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f));
 	water.loadModel("models/WATER2.obj");
 
-	Cube lightCube(lightPos, glm::vec3(0.5f));
+	Cube lightCube(lightPos, glm::vec3(1.0f));
 	lightCube.init();
 
 
@@ -77,16 +77,16 @@ int main()
 	
 	objectShader.use();
 	objectShader.setMat4("projection", projection);
-	objectShader.setVec3("light.ambient", 0.25f, 0.25f, 0.25f);
-	objectShader.setVec3("light.diffuse", 0.73f, 0.73f, 0.73f); // darken diffuse light a bit
-	objectShader.setVec3("light.specular", 0.7f, 0.7f, 0.7f);
+	objectShader.setVec3("light.ambient", 0.5f, 0.5f, 0.5f);
+	objectShader.setVec3("light.diffuse", 0.89f, 0.89f, 0.89f); // darken diffuse light a bit
+	objectShader.setVec3("light.specular", 0.006f, 0.005f, 0.004f);
 	objectShader.setVec3("lightPos", lightPos);
-	objectShader.setVec3("material.specular", 0.8f, 0.8f, 0.8f);
-	objectShader.setFloat("material.shininess", 512.0f);
+	objectShader.setVec3("material.specular", 1.0f, 1.0f, 1.0f);
+	objectShader.setFloat("material.shininess", 1024.0f);
 	objectShader.setFloat("light.constant", 1.0f);
-	objectShader.setFloat("light.linear", 0.007f);
-	objectShader.setFloat("light.quadratic", 0.0002f);
-	objectShader.setVec3("light.direction", 20.0f, 10.0f, 1.0f);
+	objectShader.setFloat("light.linear", 0.045f);
+	objectShader.setFloat("light.quadratic", 0.0075f);
+	objectShader.setVec3("light.direction", 0.0f, -10.0f, -0.5f);
 	objectShader.setVec3("objectColor", 0.388, 0.831, 0.988);
 	objectShader.setVec3("lightColor", 0.7f, 0.7f, 0.7f);
 	
