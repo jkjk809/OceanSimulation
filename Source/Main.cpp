@@ -62,15 +62,15 @@ int main()
 	Shader objectShader("Resources\\shader.vert", "Resources\\shader.frag");
 	Shader lightShader("Resources\\shader.vert", "Resources\\light.frag");
 
-	Model water(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f));
-	water.loadModel("models/WATER2.obj");
+	Model water(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(2.0f));
+	water.loadModel("models/waterLarge.obj");
 
 	Cube lightCube(lightPos, glm::vec3(1.0f));
 	lightCube.init();
 
 
 	glm::mat4 projection = glm::mat4(1.0f);
-	projection = glm::perspective(glm::radians(45.0f), static_cast<float>(screen.SCR_WIDTH) / static_cast<float> (screen.SCR_HEIGHT), 0.1f, 100.0f);
+	projection = glm::perspective(glm::radians(45.0f), static_cast<float>(screen.SCR_WIDTH) / static_cast<float> (screen.SCR_HEIGHT), 0.1f, 1000.0f);
 
 	lightShader.use();
 	lightShader.setMat4("projection", projection);
@@ -79,14 +79,14 @@ int main()
 	objectShader.setMat4("projection", projection);
 	objectShader.setVec3("light.ambient", 0.5f, 0.5f, 0.5f);
 	objectShader.setVec3("light.diffuse", 0.89f, 0.89f, 0.89f); // darken diffuse light a bit
-	objectShader.setVec3("light.specular", 0.006f, 0.005f, 0.004f);
+	objectShader.setVec3("light.specular", 0.06f, 0.05f, 0.04f);
 	objectShader.setVec3("lightPos", lightPos);
 	objectShader.setVec3("material.specular", 1.0f, 1.0f, 1.0f);
 	objectShader.setFloat("material.shininess", 1024.0f);
 	objectShader.setFloat("light.constant", 1.0f);
 	objectShader.setFloat("light.linear", 0.045f);
 	objectShader.setFloat("light.quadratic", 0.0075f);
-	objectShader.setVec3("light.direction", 0.0f, -10.0f, -0.5f);
+	objectShader.setVec3("light.direction", 0.05f, -0.09f, 2.0f);
 	objectShader.setVec3("objectColor", 0.388, 0.831, 0.988);
 	objectShader.setVec3("lightColor", 0.7f, 0.7f, 0.7f);
 	
@@ -163,7 +163,7 @@ void processInput()
 			lastToggleTime = currentTime;
 		}
 	}
-	const float cameraSpeed = 3.0f * deltaTime; // adjust accordingly
+	const float cameraSpeed = 10.0f * deltaTime; // adjust accordingly
 	if (Keyboard::key(GLFW_KEY_W) == GLFW_PRESS)
 		camera.ProcessKeyboard(FORWARD, cameraSpeed);
 
