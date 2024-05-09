@@ -7,64 +7,84 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 uniform float time;
-float amplitude = 0.3f;
-float wavelength = 0.5f;
-float frequency = 2.0f/wavelength;
-float speed = 0.8 * frequency;
-vec3 directionVectorX = vec3(1,0,0);
-vec3 directionVectorZ = vec3(0,0,1);
+
+float directionSeed = 74.0f;
+
 //f(x,t) = amp * sin(x * frequency + t * speed)
 
 out vec3 FragPos;
 out vec3 Normal;
 out vec2 TexCoords;
-vec3 totalNormals;
 
-vec3 calcNormals(vec3 worldPos){
-	float partialX = amplitude * frequency * exp(sin(worldPos.x * frequency + worldPos.z * frequency + time * speed)-1.0) * cos(worldPos.x * frequency + worldPos.x * frequency + time * speed);
-	float partialZ = amplitude * frequency * exp(sin(worldPos.x * frequency + worldPos.z * frequency + time * speed)-1.0) * cos(worldPos.z * frequency + worldPos.x * frequency + time * speed);
-	//float partialX2 = 0.17 * 3.3 * exp(sin(worldPos.x * 3.3  + time * 2.8f) - 1.0) * cos(worldPos.x * 3.3 + time * 2.8f);
-	//float partialZ2 = 0.17 * 3.3 * exp(sin(worldPos.z * 3.3 + time * 2.8f) - 1.0) * cos(worldPos.z * 3.3 + time * 2.8f);
-	//float partialX3 = 0.24 * 2.3 * exp(sin(worldPos.x * 2.3 + time * 1.84f) - 1.0) * cos(worldPos.x * 2.3 + time * 1.84f);
-	//float partialZ3 = 0.24 * 2.3 * exp(sin(worldPos.z * 2.3 + time * 1.84f) - 1.0) * cos(worldPos.z * 2.3 + time * 1.84f);
 
-	vec3 tangentVector = vec3(1.0f, partialX, 0.0f);
-	vec3 binormalVector = vec3(0.0f, partialZ, 1.0f);
-	vec3 normalVector = cross(binormalVector, tangentVector);
 	
-	return normalVector;
+
+vec3 totalNormals = aNormal;
+
+float random (vec2 seed) 
+{
+    return fract(sin(dot(seed.xy,vec2(12.9898,78.233))) * 43758.5453123);
+}
+
+vec2 getRandomDirection(int waveNum)
+{
+    vec2 dir = vec2(1);
+    dir.x = 2.0 * random(vec2(waveNum, directionSeed)) - 1.0;
+    dir.y = 2.0 * random(vec2(waveNum, directionSeed + 1)) - 1.0;
+    return normalize(dir);
+}
+
+vec3 calcNormals(float expWave, float cosWave, float amplitude, float frequency, vec2 direction){
+	float dx = amplitude * frequency * expWave * direction.x * cosWave;
+    float dz = amplitude * frequency * expWave * direction.y * cosWave;
+
+	vec3 tangentVector = vec3(1.0, dx, 0.0);  
+    vec3 binormalVector = vec3(0.0, dz, 1.0);
+
+    vec3 normalVector = normalize(cross(binormalVector, tangentVector));
+    return normalVector;
 }
 
 float displaceVertex(vec3 worldPos)
 {
 	float totalWave = 0.0f;
+	float amplitude = 0.43f;
+	float frequency = 0.8f;
+	float speed = 1.2;
 
-		// do it by hand for now who cares
-		//float waveOffset = sin(worldPos.x + time);
-		float waveOffset = amplitude * sin(worldPos.x * frequency + time * speed) + sin(worldPos.z * frequency + time * speed); 
-	//	float waveOffset2 = 0.17 * exp(sin(worldPos.x * 3.3 + (worldPos.z * 1.4) + time * 2.8f)) - 1.0;
-	//	float waveOffset3 = 0.24 * exp(sin(worldPos.x * 2.3 + (worldPos.z * 2.3) + time * 1.84f)) - 1.0;
-		totalWave = waveOffset;
+	for(int i = 0; i < 15; i++)
+	{
+	vec2 direction = getRandomDirection(i);
+		
+		float waveOffset = amplitude * exp(sin((dot(direction, worldPos.xz) * frequency) + time * speed) - 1.0);
+		float wavePhase = dot(direction, worldPos.xz) * frequency + time * speed;
+		float sinWave = sin(wavePhase);
+		float cosWave = cos(wavePhase);
+		float expWave = exp(sinWave - 1.0f);
 
-	return worldPos.y  + amplitude * totalWave;
+		totalWave += amplitude * expWave;
+		totalNormals += calcNormals(expWave, cosWave, amplitude, frequency, direction);
+
+		amplitude *= 0.89;
+		frequency *= 1.16;
+		speed *= 1.07;
+		
+	}
+	worldPos.y = totalWave;
+	return worldPos.y;
 }
-
-
 
 void main()
 {
-   //position of our vertices in world coordinates
+
    vec4 worldPos = model * vec4(aPos.x, aPos.y, aPos.z, 1.0);
-   //normals of our vertices
+
    TexCoords = aTexCoords;
 
    vec3 displacedPos = vec3(worldPos.x, displaceVertex(worldPos.xyz), worldPos.z);
 
-   vec3 normalVector = calcNormals(worldPos.xyz);
-   Normal = normalVector;
-
+   Normal = normalize(totalNormals);
    FragPos = displacedPos.xyz;
-
    gl_Position = projection * view * model * vec4(FragPos, 1.0);
    
 };

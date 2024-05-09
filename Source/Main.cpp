@@ -31,7 +31,7 @@ Screen screen;
 Mouse mouse(&camera);
 bool wireframe = false;
 bool pause = false;
-glm::vec3 lightPos(0.0f, 2.0f, 0.0f);
+glm::vec3 lightPos(0.0f, 6.0f, -23.0f);
 
 
 int main()
@@ -62,7 +62,7 @@ int main()
 	Shader objectShader("Resources\\shader.vert", "Resources\\shader.frag");
 	Shader lightShader("Resources\\shader.vert", "Resources\\light.frag");
 
-	Model water(glm::vec3(0.0f, 0.0f, -2.0f), glm::vec3(0.5f));
+	Model water(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f));
 	water.loadModel("models/WATER2.obj");
 
 	Cube lightCube(lightPos, glm::vec3(0.5f));
@@ -77,18 +77,18 @@ int main()
 	
 	objectShader.use();
 	objectShader.setMat4("projection", projection);
-	objectShader.setVec3("light.ambient", 0.7f, 0.7f, 0.7f);
-	objectShader.setVec3("light.diffuse", 0.75f, 0.75f, 0.75f); // darken diffuse light a bit
-	objectShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+	objectShader.setVec3("light.ambient", 0.25f, 0.25f, 0.25f);
+	objectShader.setVec3("light.diffuse", 0.73f, 0.73f, 0.73f); // darken diffuse light a bit
+	objectShader.setVec3("light.specular", 0.7f, 0.7f, 0.7f);
 	objectShader.setVec3("lightPos", lightPos);
-	objectShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
-	objectShader.setFloat("material.shininess", 32.0f);
+	objectShader.setVec3("material.specular", 0.8f, 0.8f, 0.8f);
+	objectShader.setFloat("material.shininess", 512.0f);
 	objectShader.setFloat("light.constant", 1.0f);
-	objectShader.setFloat("light.linear", 0.09f);
-	objectShader.setFloat("light.quadratic", 0.032f);
-
+	objectShader.setFloat("light.linear", 0.007f);
+	objectShader.setFloat("light.quadratic", 0.0002f);
+	objectShader.setVec3("light.direction", 20.0f, 10.0f, 1.0f);
 	objectShader.setVec3("objectColor", 0.388, 0.831, 0.988);
-	objectShader.setVec3("lightColor", 0.4f, 0.4f, 0.4f);
+	objectShader.setVec3("lightColor", 0.7f, 0.7f, 0.7f);
 	
 	float time = glfwGetTime();
 
