@@ -58,9 +58,10 @@ void main()
     vec3 ambient  = light.ambient * objectColor;
     vec3 diffuse  = light.diffuse * diff * objectColor;
     vec3 specular = light.specular * spec * vec3(1.0,1.0,1.0);
-    diffuse *= attenuation;
-    specular *= attenuation;
-    vec3 result = (ambient + diffuse + specular) * objectColor ;
+   ambient *= attenuation;
+   diffuse *= attenuation;
+   specular *= attenuation;
+    vec3 result = (ambient + diffuse + specular) * objectColor;
     
     FragColor = vec4(result, 1.0);
     
