@@ -47,15 +47,20 @@ float displaceVertex(vec3 worldPos)
 {
 	float totalWave = 0.0f;
 	float amplitude = 0.72f;
-	float frequency = 0.396f;
-	float speed = 1.34f;
+	float frequency = 0.46f;
+	float speed = 1.56f;
 	float dx = 0.0f;
     float dz = 0.0f;
+	float lastDX = 0.0f;
+	float lastDZ = 0.0f;
 
-	for(int i = 0; i < 200; i++)
+	for(int i = 0; i < 60; i++)
 	{
-	vec2 direction = getRandomDirection(i);
+		worldPos.x += lastDX * 0.03;
+		worldPos.z += lastDZ * 0.03;
+		vec2 direction = getRandomDirection(i);
 		
+
 		float waveOffset = amplitude * exp(sin((dot(direction, worldPos.xz) * frequency) + time * speed) - 1.0);
 		float wavePhase = dot(direction, worldPos.xz) * frequency + time * speed;
 		float sinWave = sin(wavePhase);
@@ -66,9 +71,11 @@ float displaceVertex(vec3 worldPos)
 
 		dx += amplitude * frequency * expWave * direction.x * cosWave;
         dz += amplitude * frequency * expWave * direction.y * cosWave;
+	    lastDX = dx;
+	    lastDZ = dz;
 		amplitude *= 0.70f;
 		frequency *= 1.22f;
-		speed *= 0.97f;
+		speed *= 0.98f;
 		
 	}
 	totalNormals = calcNormals(dx, dz);

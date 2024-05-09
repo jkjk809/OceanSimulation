@@ -58,7 +58,7 @@ void main()
     float diff = max(dot(norm, lightDir), 0.0);
     
     vec3 viewDir = normalize(viewPos - FragPos);
-    float fresnelFactor = fresnel(viewDir, norm, 10.7f);
+    float fresnelFactor = fresnel(viewDir, norm, 7.7f);
     vec3 reflectDir = reflect(-lightDir, norm);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
     
