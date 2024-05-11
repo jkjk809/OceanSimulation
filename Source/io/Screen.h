@@ -25,6 +25,7 @@ public:
 
 	bool shouldClose();
 	void setShouldClose(bool shouldClose);
+	GLFWwindow* getWindow() const;
 
 private:
 	GLFWwindow* window;

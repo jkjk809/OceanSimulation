@@ -43,10 +43,10 @@ void Screen::setParameters()
 
 	glfwSetKeyCallback(window, Keyboard::keyCallback);
 
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	glfwSetCursorPosCallback(window, Mouse::cursorPosCallback);
-	glfwSetMouseButtonCallback(window, Mouse::mouseButtonCallback);
-	glfwSetScrollCallback(window, Mouse::mouseWheelCallback);
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	//glfwSetCursorPosCallback(window, Mouse::cursorPosCallback);
+	//glfwSetMouseButtonCallback(window, Mouse::mouseButtonCallback);
+	//glfwSetScrollCallback(window, Mouse::mouseWheelCallback);
 	glfwMakeContextCurrent(window);
 	glEnable(GL_DEPTH_TEST);
 }
@@ -75,4 +75,8 @@ void Screen::setShouldClose(bool shouldClose)
 
 void Screen::setClearColor(float r, float g, float b, float a) {
 	clearColor = glm::vec4(r, g, b, a);
+}
+
+GLFWwindow* Screen::getWindow() const {
+	return window;
 }

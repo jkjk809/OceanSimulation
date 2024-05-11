@@ -8,8 +8,15 @@ uniform mat4 view;
 uniform mat4 projection;
 uniform float time;
 
-float directionSeed = 32.235f;
+uniform int nWaves;
+uniform float seed;
+uniform float initialAmp;
+uniform float initialFreq;
+uniform float initialSpeed;
 
+uniform float ampIncrease;
+uniform float freqIncrease;
+uniform float speedIncrease;
 //f(x,t) = amp * sin(x * frequency + t * speed)
 
 out vec3 FragPos;
@@ -29,8 +36,8 @@ float random (vec2 seed)
 vec2 getRandomDirection(int waveNum)
 {
     vec2 dir = vec2(1);
-    dir.x = 2.0 * random(vec2(waveNum, directionSeed)) - 1.0;
-    dir.y = 2.0 * random(vec2(waveNum, directionSeed + 1)) - 1.0;
+    dir.x = 2.0 * random(vec2(waveNum, seed)) - 1.0;
+    dir.y = 2.0 * random(vec2(waveNum, seed + 1)) - 1.0;
     return normalize(dir);
 }
 
@@ -46,18 +53,18 @@ vec3 calcNormals(float dx,float dz){
 float displaceVertex(vec3 worldPos)
 {
 	float totalWave = 0.0f;
-	float amplitude = 0.72f;
-	float frequency = 0.46f;
-	float speed = 1.56f;
+	float amplitude = initialAmp;
+	float frequency = initialFreq;
+	float speed = initialSpeed;
 	float dx = 0.0f;
     float dz = 0.0f;
 	float lastDX = 0.0f;
 	float lastDZ = 0.0f;
 
-	for(int i = 0; i < 60; i++)
+	for(int i = 0; i < nWaves; i++)
 	{
-		worldPos.x += lastDX * 0.03;
-		worldPos.z += lastDZ * 0.03;
+		worldPos.x += lastDX * 0.02;
+		worldPos.z += lastDZ * 0.02;
 		vec2 direction = getRandomDirection(i);
 		
 
@@ -65,17 +72,17 @@ float displaceVertex(vec3 worldPos)
 		float wavePhase = dot(direction, worldPos.xz) * frequency + time * speed;
 		float sinWave = sin(wavePhase);
 		float cosWave = cos(wavePhase);
-		float expWave = exp(sinWave - 1.0f);
+		float expWave = exp((sinWave));
 
-		totalWave += amplitude * expWave;
+		totalWave += waveOffset;
 
 		dx += amplitude * frequency * expWave * direction.x * cosWave;
         dz += amplitude * frequency * expWave * direction.y * cosWave;
 	    lastDX = dx;
 	    lastDZ = dz;
-		amplitude *= 0.70f;
-		frequency *= 1.22f;
-		speed *= 0.98f;
+		amplitude *= ampIncrease;
+		frequency *= freqIncrease;
+		speed *= speedIncrease;
 		
 	}
 	totalNormals = calcNormals(dx, dz);

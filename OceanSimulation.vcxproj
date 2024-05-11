@@ -112,6 +112,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Users\sweet\source\repos\OceanSimulation\Header\imgui;C:\Users\sweet\source\repos\OceanSimulation\Source\imgui</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -127,6 +128,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>C:\Users\sweet\source\repos\OceanSimulation\Header\imgui;C:\Users\sweet\source\repos\OceanSimulation\Source\imgui</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -137,21 +139,32 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="Resources\light.frag" />
-    <None Include="Resources\shader.frag" />
-    <None Include="Resources\shader.vert" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="Source\glad.c" />
     <ClCompile Include="Source\graphics\Mesh.cpp" />
     <ClCompile Include="Source\graphics\Model.cpp" />
     <ClCompile Include="Source\graphics\Texture.cpp" />
+    <ClCompile Include="Source\imgui\imgui.cpp" />
+    <ClCompile Include="Source\imgui\imgui_demo.cpp" />
+    <ClCompile Include="Source\imgui\imgui_draw.cpp" />
+    <ClCompile Include="Source\imgui\imgui_impl_glfw.cpp" />
+    <ClCompile Include="Source\imgui\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="Source\imgui\imgui_tables.cpp" />
+    <ClCompile Include="Source\imgui\imgui_widgets.cpp" />
     <ClCompile Include="Source\io\Keyboard.cpp" />
     <ClCompile Include="Source\io\Mouse.cpp" />
     <ClCompile Include="Source\io\Screen.cpp" />
     <ClCompile Include="Source\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Header\imgui\imconfig.h" />
+    <ClInclude Include="Header\imgui\imgui.h" />
+    <ClInclude Include="Header\imgui\imgui_impl_glfw.h" />
+    <ClInclude Include="Header\imgui\imgui_impl_opengl3.h" />
+    <ClInclude Include="Header\imgui\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="Header\imgui\imgui_internal.h" />
+    <ClInclude Include="Header\imgui\imstb_rectpack.h" />
+    <ClInclude Include="Header\imgui\imstb_textedit.h" />
+    <ClInclude Include="Header\imgui\imstb_truetype.h" />
     <ClInclude Include="Source\graphics\Mesh.h" />
     <ClInclude Include="Source\graphics\Model.h" />
     <ClInclude Include="Source\graphics\models\Cube.hpp" />
