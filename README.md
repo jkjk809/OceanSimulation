@@ -1,7 +1,9 @@
 # OceanSimulation WIP
 Uses Fractional Brownian Motion
 ## Current State
-![waterProgress2](https://github.com/jkjk809/OceanSimulation/assets/157747331/aa0433cf-a5a9-4735-8d37-f5059c5f39bd)
+![Base Profile Screenshot 2024 05 11 - 02 14 24 50](https://github.com/jkjk809/OceanSimulation/assets/157747331/607efce9-2b34-4741-9863-01b3ee74682a)
+
+![Base Profile Screenshot 2024 05 11 - 02 12 04 46](https://github.com/jkjk809/OceanSimulation/assets/157747331/86f8ae94-c334-454b-9292-28b8f89022ee)
 
 ## For More Detailed Info
 Check these sources 
