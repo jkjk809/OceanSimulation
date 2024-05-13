@@ -40,7 +40,6 @@ bool pause = false;
 bool day = true;
 glm::vec3 lightPos(0.0f, 2.35f, 0.0f);
 
-
 int main()
 {
 	stbi_set_flip_vertically_on_load(true);
@@ -130,7 +129,7 @@ int main()
 	};
 	std::string dayCubemap[6] =
 	{
-	    "models\\textures\\right2.png",
+	    "models\\textures\\right.png",
 		"models\\textures\\left.png",
 		"models\\textures\\top.png",
 		"models\\textures\\bottom.png",
@@ -227,14 +226,15 @@ int main()
 	float ampIncrease = 0.69f;
 	float freqIncrease = 1.24f;
 	float speedIncrease = 0.95f;
-	float highlightOffset = 3.0f;
-	float fresnelFactor = 2.0f;
+	float fresnelFactor = 1.0f;
+	float shiny = 128.0f;
+
 	glm::vec3 fogColor = glm::vec3(1.0f, 0.89f, 0.745f);
-	glm::vec3 lightDirection = glm::vec3(-1.0f, -5.0f, 1.0f);
-	glm::vec3 lightAmbient = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::vec3 lightDiffuse = glm::vec3(0.1f, 0.1f, 0.1f);
-	glm::vec3 lightSpecular = glm::vec3(0.09f, 0.09f, 0.09f);
-	glm::vec3 highlight = glm::vec3(0.1f, 0.26f, 0.24f);
+	glm::vec3 lightDirection = glm::vec3(0.0f, -1.0f, 2.97f);
+	glm::vec3 lightAmbient = glm::vec3(0.133f, 0.306f, 0.529f);
+	glm::vec3 lightDiffuse = glm::vec3(0.749f, 0.925f, 1.0f);
+	glm::vec3 lightSpecular = glm::vec3(1.0f, 0.737f, 0.471f);
+
 	objectShader.use();
 
 	objectShader.setInt("nWaves", nWaves);
@@ -250,13 +250,12 @@ int main()
 	
 	objectShader.setMat4("projection", projection);
 	objectShader.setVec3("lightPos", lightPos);
-	objectShader.setVec3("material.specular", 0.72f, 0.57f, 0.3f);
-	objectShader.setFloat("material.shininess", 4056.0f);
+	
 	objectShader.setFloat("light.constant", 1.0f);
 	objectShader.setFloat("light.linear", 0.045f);
 	objectShader.setFloat("light.quadratic", 0.0075f);
 	
-	objectShader.setVec3("objectColor", 0.02f, 0.125f, 0.412f);
+	objectShader.setVec3("objectColor", 0.533f, 0.729f, 0.757f);
 	objectShader.setVec3("lightColor", 1.0f, 0.525f, 0.0f);
 	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, dayTexture);
@@ -336,11 +335,9 @@ int main()
 		objectShader.setVec3("light.ambient", lightAmbient);
 		objectShader.setVec3("light.diffuse", lightDiffuse);
 		objectShader.setVec3("material.specular", lightSpecular);
-		objectShader.setVec3("material.highlight", highlight);
 		objectShader.setVec3("material.specular", lightSpecular);
-		objectShader.setVec3("material.highlight", highlight);
-		objectShader.setFloat("material.highlightOffset", highlightOffset);
 		objectShader.setFloat("fresnelFactor", fresnelFactor);
+		objectShader.setFloat("shiny", shiny);
 
 		water.render(objectShader);
 		
@@ -363,6 +360,7 @@ int main()
 		ImGui::NewFrame();
 
 		ImGui::Begin("Ocean Simulation");
+		ImGui::Text("FPS: %.1f", fps);
 		if (ImGui::CollapsingHeader("Ocean Parameters"))
 		{
 			ImGui::SliderInt("Number of Waves", &nWaves, 1, 128);
@@ -383,9 +381,9 @@ int main()
 			ImGui::ColorEdit3("Ambient Light", &lightAmbient[0]);
 			ImGui::ColorEdit3("Diffuse Light", &lightDiffuse[0]);
 			ImGui::ColorEdit3("Specular Light", &lightSpecular[0]);
-			ImGui::ColorEdit3("Highlight Color", &highlight[0]);
-			ImGui::DragFloat("Highlight offset", &highlightOffset, 0.01f);
+			ImGui::DragFloat("Shininess", &shiny, 0.1f);
 			ImGui::DragFloat("Fresnel Factor", &fresnelFactor, 0.01f);
+			
 		}
 
 		if (ImGui::CollapsingHeader("Change environment"))
@@ -394,11 +392,17 @@ int main()
 			{
 				day = true;
 				fogColor = glm::vec3(1.0f, 0.89f, 0.745f);
+				lightAmbient = glm::vec3(0.133f, 0.306f, 0.529f);
+				lightDiffuse = glm::vec3(0.749f, 0.925f, 1.0f);
+				lightSpecular = glm::vec3(1.0f, 0.737f, 0.471f);
 			}
 			if (ImGui::Button("Night"))
 			{
 				day = false;
-				fogColor = glm::vec3(0.0f, 0.0f, 0.0f);
+				fogColor = glm::vec3(0.106f, 0.157f, 0.2f);
+				lightAmbient = glm::vec3(0.0f, 0.0f, 0.0f);
+				lightDiffuse = glm::vec3(0.1f, 0.1f, 0.1f);
+				lightSpecular = glm::vec3(0.4f, 0.4f, 0.4f);
 			}
 		}
 

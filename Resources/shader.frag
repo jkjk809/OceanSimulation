@@ -20,8 +20,6 @@ struct Material {
     vec3 diffuse;
     vec3 specular;
     float shininess;
-    vec3 highlight;
-    float highlightOffset;
 }; 
 
 struct Light {
@@ -34,11 +32,12 @@ struct Light {
     float quadratic;
 };
 
+// for some reason material.shininess is not working for setting uniform idk.
+uniform float shiny;
 uniform Light light;  
-uniform bool enableSpecular;
 uniform Material material;
-uniform bool lighting;
 uniform vec3 fogColor;
+uniform float fresnelFactor;
 //vec3 objColor = vec3(0.075f, 0.541f, 0.71f);
 vec3 objColor = vec3(0.02f, 0.125f, 0.412f);
 
@@ -72,20 +71,13 @@ void main()
     float diff = max(dot(norm, lightDir), 0.0);
     
     vec3 viewDir = normalize(viewPos - FragPos);
-    vec3 reflectDir = reflect(-lightDir, norm);
-    float fresnel = pow(1.0 - max(dot(viewDir, norm), 0.2), 5.0);
+    vec3 reflectDir = normalize(reflect(-lightDir, norm));
+    float fresnel = pow(1.0 - max(dot(viewDir, norm), 0.05), fresnelFactor);
 
-    float highlightMask = max((FragPos.y - material.highlightOffset), 0.0);
-    float distanceToPlayer = length(viewPos - FragPos);
-    float fadeFactor = max(1.0 - (distanceToPlayer / 200.0), 0);
-    vec3 highlight = material.highlight * highlightMask * fadeFactor;
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), shiny);
 
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-    vec3 reflectVec = reflect(-viewDir, norm);
-    vec3 reflectionColor = texture(skybox, reflectVec).rgb;
-
-    vec3 ambient  = light.ambient;
-    vec3 diffuse  = light.diffuse * diff;
+    vec3 ambient  = light.ambient * objectColor;
+    vec3 diffuse  = light.diffuse * diff * objectColor;
     vec3 specular = material.specular * spec * fresnel;
 
     //refraction, reflection didnt look good, ill probably add it at a later date.
@@ -94,8 +86,8 @@ void main()
     vec3 refractedRay = refract(incidentRay, normalize(Normal), ratio);
     vec3 refraction = (1.0 - fresnel) * texture(skybox, refractedRay).rgb;
 
-    vec3 result = (ambient + diffuse + specular + highlight + refraction);
+    vec3 result = (ambient + diffuse + specular + refraction);
     vec3 finalColor = mix(result.rgb, fogColor, depth);
-    FragColor = vec4(finalColor, 1.0);
+    FragColor = vec4(finalColor.rgb, 1.0);
 
 };
