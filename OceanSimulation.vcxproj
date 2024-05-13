@@ -176,6 +176,10 @@
     <ClInclude Include="Source\io\Mouse.h" />
     <ClInclude Include="Source\io\Screen.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\post.frag" />
+    <None Include="Resources\post.vert" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

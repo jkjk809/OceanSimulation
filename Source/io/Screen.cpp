@@ -44,7 +44,7 @@ void Screen::setParameters()
 	glfwSetKeyCallback(window, Keyboard::keyCallback);
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-//	glfwSetCursorPosCallback(window, Mouse::cursorPosCallback);
+	//glfwSetCursorPosCallback(window, Mouse::cursorPosCallback);
 	//glfwSetMouseButtonCallback(window, Mouse::mouseButtonCallback);
 	//glfwSetScrollCallback(window, Mouse::mouseWheelCallback);
 	glfwMakeContextCurrent(window);
